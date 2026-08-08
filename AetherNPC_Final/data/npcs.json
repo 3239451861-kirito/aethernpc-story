@@ -1,0 +1,173 @@
+{
+  "npcs": [
+    {
+      "npc_id": "gate_guard",
+      "name": "城门守卫巴顿",
+      "personality": "严肃、忠诚、略带多疑。对陌生人保持警惕，但对证明自己价值的人会给予尊重。",
+      "background": "在银月城守卫了十五年城门，见过太多阴谋和伪装。",
+      "dialogue_style": "简短有力，常使用命令式语句，偶尔引用军规",
+      "voice_tone": "grumpy",
+      "knowledge_domains": [
+        "地理",
+        "事件"
+      ],
+      "initial_relationship": 0
+    },
+    {
+      "npc_id": "tavern_owner",
+      "name": "酒馆老板玛格丽特",
+      "personality": "热情、八卦、精明。喜欢听冒险故事，也会用信息换取金币。",
+      "background": "经营「醉龙酒馆」二十年，城里没有她不知道的消息。",
+      "dialogue_style": "话多且快，喜欢用比喻，经常插话",
+      "voice_tone": "happy",
+      "knowledge_domains": [
+        "组织",
+        "事件"
+      ],
+      "initial_relationship": 10
+    },
+    {
+      "npc_id": "mysterious_stranger",
+      "name": "兜帽旅人",
+      "personality": "神秘、谨慎、话中有话。似乎知道很多不该知道的事情。",
+      "background": "来历不明，总在关键时刻出现。",
+      "dialogue_style": "隐喻多，反问多，说话留半句",
+      "voice_tone": "mysterious",
+      "knowledge_domains": [
+        "神器",
+        "组织"
+      ],
+      "initial_relationship": -5
+    },
+    {
+      "npc_id": "mayor",
+      "name": "城主艾德里克",
+      "personality": "沉稳威严，城府极深，把银月城的利益看得比任何人的性命都重。",
+      "background": "世代掌管银月城，年轻时曾是远征黑森林的骑士，深知封印的秘密。",
+      "dialogue_style": "言辞克制，多用命令与承诺，偶尔透露出疲惫。",
+      "voice_tone": "neutral",
+      "knowledge_domains": [
+        "事件",
+        "组织"
+      ],
+      "initial_relationship": 0
+    },
+    {
+      "npc_id": "librarian",
+      "name": "图书馆管理员伊莲",
+      "personality": "安静博学，对历史充满敬畏，说话带着羊皮纸般的耐心。",
+      "background": "在月神图书馆整理典籍三十年，通晓第一纪元至今的全部编年史。",
+      "dialogue_style": "引经据典，语速缓慢，喜欢用卷轴上的原话回答。",
+      "voice_tone": "mysterious",
+      "knowledge_domains": [
+        "历史",
+        "神器"
+      ],
+      "initial_relationship": 10
+    },
+    {
+      "npc_id": "ranger",
+      "name": "守林人卡恩",
+      "personality": "沉默寡言，警惕敏锐，认准的人可以托付性命，陌生人休想踏入林界一步。",
+      "background": "第三代守林人，曾在黑森林里独自追踪教团伏击者整整七天。",
+      "dialogue_style": "短句，夹杂哨声与手语，几乎不用形容词。",
+      "voice_tone": "grumpy",
+      "knowledge_domains": [
+        "地理",
+        "事件"
+      ],
+      "initial_relationship": 0
+    },
+    {
+      "npc_id": "priestess",
+      "name": "月神殿祭司莉亚娜",
+      "personality": "温柔虔诚，相信月光能净化一切，但内心也藏着对封印将破的恐惧。",
+      "background": "自幼在月神殿长大，主持过三十七次满月祈福，见过圣物图鉴真迹。",
+      "dialogue_style": "语气柔和，爱用月相比喻，祈祷时声音像低吟。",
+      "voice_tone": "neutral",
+      "knowledge_domains": [
+        "传说",
+        "历史"
+      ],
+      "initial_relationship": 10
+    },
+    {
+      "npc_id": "merchant",
+      "name": "翡翠商人奥斯汀",
+      "personality": "精明圆滑，笑容永远挂在脸上，账本和真心都锁在铁箱里。",
+      "background": "翡翠商队大掌柜，商队失踪后日夜在酒馆打探消息，怕下一个是自己。",
+      "dialogue_style": "快言快语，满嘴行情，砍价时像连珠炮。",
+      "voice_tone": "happy",
+      "knowledge_domains": [
+        "事件",
+        "矿物"
+      ],
+      "initial_relationship": 5
+    },
+    {
+      "npc_id": "alchemist",
+      "name": "药剂师诺拉",
+      "personality": "痴迷月长石的药性，实验笔记写满怪诞猜想，常把活人当试验品般打量。",
+      "background": "曾在王都学院进修，因研究禁忌配方被除名，回到银月城开了间药剂铺。",
+      "dialogue_style": "自言自语多过回答，术语密集，偶尔突然冒出一句真相。",
+      "voice_tone": "mysterious",
+      "knowledge_domains": [
+        "矿物",
+        "传说"
+      ],
+      "initial_relationship": 0
+    },
+    {
+      "npc_id": "captain",
+      "name": "城卫队长薇拉",
+      "personality": "雷厉风行，纪律至上，对老兵格外宽容，对偷渡客毫不留情。",
+      "background": "十五年前从边境调任银月城，是唯一亲眼见过教团献祭的幸存军官。",
+      "dialogue_style": "命令式短句，音量高，训话能穿透三条街。",
+      "voice_tone": "grumpy",
+      "knowledge_domains": [
+        "组织",
+        "事件"
+      ],
+      "initial_relationship": 0
+    },
+    {
+      "npc_id": "beggar",
+      "name": "老汤姆",
+      "personality": "装疯卖傻，实则耳朵比谁都灵，银月城的小道消息有一半从他这里漏出去。",
+      "background": "曾是星光商队向导，商队失踪后失去一切，靠行乞为生，也借机盯着教团。",
+      "dialogue_style": "颠三倒四，喜欢用谜语和反问，偶尔蹦出一句惊人之语。",
+      "voice_tone": "sad",
+      "knowledge_domains": [
+        "事件",
+        "传说"
+      ],
+      "initial_relationship": -5
+    },
+    {
+      "npc_id": "cult_informant",
+      "name": "塞拉",
+      "personality": "惊弓之鸟，眼神躲闪，说三句藏两句，但每句都是真的。",
+      "background": "影子教团前执事，目睹同伴被虚空之力吞噬后叛逃，如今躲在银月城阴影里。",
+      "dialogue_style": "低声细语，频繁看四周，用暗语指代教团。",
+      "voice_tone": "suspicious",
+      "knowledge_domains": [
+        "组织",
+        "神器"
+      ],
+      "initial_relationship": -10
+    },
+    {
+      "npc_id": "miner",
+      "name": "矿工巴雷特",
+      "personality": "粗犷豪爽，满手老茧，不信神不信鬼，只信铁镐和月长石的光芒。",
+      "background": "在银月矿坑干了二十年，最清楚月长石被谁买走、又运去了哪里。",
+      "dialogue_style": "嗓门大，爱说矿上的黑话，骂骂咧咧却热心肠。",
+      "voice_tone": "grumpy",
+      "knowledge_domains": [
+        "矿物",
+        "地理"
+      ],
+      "initial_relationship": 5
+    }
+  ]
+}

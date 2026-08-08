@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AetherNPC —— AIGC 智能 NPC 对话 Demo</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #141b33;
+      --line: #2a3a5f;
+      --text: #e8edf7;
+      --muted: #93a3c0;
+      --accent: #6ea8ff;
+      --user: #24345c;
+      --assistant: #1c2a49;
+      --badge: #ffd166;
+      --ok: #4ade80;
+      --error: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, #1b2a52 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .shell {
+      width: min(980px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+    header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    header h1 { font-size: 20px; letter-spacing: 1px; }
+    header p { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .toolbar {
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .toolbar label { font-size: 13px; color: var(--muted); }
+    select, input[type="text"] {
+      background: #0d1528;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 14px;
+      outline: none;
+    }
+    select:focus, input:focus { border-color: var(--accent); }
+    #sessionId { flex: 1; min-width: 180px; }
+    button {
+      background: var(--accent);
+      color: #0b1020;
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:hover { filter: brightness(1.1); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .status { font-size: 12px; color: var(--muted); }
+    .status.online { color: var(--ok); }
+    .status.offline { color: var(--error); }
+    #chatLog {
+      height: 400px;
+      overflow-y: auto;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .bubble {
+      max-width: 78%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      line-height: 1.6;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .bubble.user { align-self: flex-end; background: var(--user); }
+    .bubble.assistant { align-self: flex-start; background: var(--assistant); }
+    .bubble.error { align-self: center; background: rgba(248, 113, 113, 0.15); color: var(--error); font-size: 12px; }
+    .bubble .meta { display: block; font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .choices {
+      align-self: flex-start;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 82%;
+    }
+    .choices .choice {
+      background: rgba(110, 168, 255, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(110, 168, 255, 0.4);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 10px;
+    }
+    #messageInput { flex: 1; }
+    #statePanel {
+      border-top: 1px solid var(--line);
+      padding: 10px 24px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      min-height: 38px;
+    }
+    #statePanel strong { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <h1>⚡ AetherNPC</h1>
+        <p>AIGC 智能 NPC 对话系统 · 剧情选项 + WebSocket 实时 Demo</p>
+      </div>
+      <button id="connectBtn">连接</button>
+    </header>
+    <div class="toolbar">
+      <label>NPC</label>
+      <select id="npcSelect"></select>
+      <input type="text" id="sessionId" placeholder="会话 ID（留空自动生成）">
+    </div>
+    <main id="chatLog">
+      <div class="bubble assistant">你好，旅行者。欢迎来到银月城，点击“连接”后即可与我对话；剧情中会出现可点击的选项。</div>
+    </main>
+    <footer>
+      <input type="text" id="messageInput" placeholder="对 NPC 说点什么…" maxlength="2048">
+      <button id="sendBtn">发送</button>
+    </footer>
+    <div id="statePanel">
+      <span>连接状态：<strong id="wsStatusText">未连接</strong></span>
+      <span>剧情节点：<strong id="storyNode">-</strong></span>
+      <span>记忆：<strong id="memoryInfo">-</strong></span>
+      <span>关系：<strong id="relationshipInfo">-</strong></span>
+      <span>知识引用：<strong id="knowledgeInfo">-</strong></span>
+      <span>最近效果：<strong id="effectInfo">-</strong></span>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const chatLog = $("chatLog");
+    const npcSelect = $("npcSelect");
+    const sessionInput = $("sessionId");
+    const messageInput = $("messageInput");
+    const connectBtn = $("connectBtn");
+    const sendBtn = $("sendBtn");
+
+    let socket = null;
+    let lastChoices = {};
+    let sessionId = localStorage.getItem("aethernpc.session") || "";
+    sessionInput.value = sessionId;
+
+    function setStatus(text, online) {
+      $("wsStatusText").textContent = text;
+      $("wsStatusText").parentElement.classList.toggle("online", online === true);
+      $("wsStatusText").parentElement.classList.toggle("offline", online === false);
+    }
+
+    function appendMessage(role, text, meta) {
+      const div = document.createElement("div");
+      div.className = "bubble " + role;
+      div.textContent = text;
+      if (meta) {
+        const span = document.createElement("span");
+        span.className = "meta";
+        span.textContent = meta;
+        div.appendChild(span);
+      }
+      chatLog.appendChild(div);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function appendChoices(choices) {
+      if (!choices || !choices.length) return;
+      const wrap = document.createElement("div");
+      wrap.className = "choices";
+      for (const choice of choices) {
+        const btn = document.createElement("button");
+        btn.className = "choice";
+        btn.textContent = choice.text;
+        btn.onclick = () => sendChoice(choice.choice_id);
+        wrap.appendChild(btn);
+      }
+      chatLog.appendChild(wrap);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    async function loadNpcs() {
+      try {
+        const response = await fetch("/npcs");
+        if (!response.ok) throw new Error("加载 NPC 列表失败");
+        const npcs = (await response.json()).npcs || [];
+        npcSelect.innerHTML = "";
+        for (const npc of npcs) {
+          const option = document.createElement("option");
+          option.value = npc.npc_id;
+          option.textContent = npc.name + "（" + npc.voice_tone + "）";
+          npcSelect.appendChild(option);
+        }
+        appendMessage("assistant", "已加载 " + npcs.length + " 位 NPC：选择一个开始对话吧。");
+      } catch (error) {
+        appendMessage("error", "加载 NPC 失败：" + error.message);
+      }
+    }
+
+    function updateState(data) {
+      $("knowledgeInfo").textContent = (data.cited_knowledge || []).join("、") || "无";
+      $("effectInfo").textContent =
+        "已选：" + (data.validated_choice || "-") +
+        " · 好感：" + (data.relationship ?? "-");
+    }
+
+    async function refreshSession() {
+      try {
+        const response = await fetch("/sessions/" + encodeURIComponent(sessionId));
+        if (!response.ok) throw new Error("会话不存在");
+        const state = await response.json();
+        $("storyNode").textContent = (state.current_node || "-") +
+          "（历史 " + (state.history_count || 0) + " 条）";
+        const memoryKeys = Object.keys(state.memory || {});
+        $("memoryInfo").textContent = memoryKeys.length ? memoryKeys.join("、") : "空";
+        const relations = Object.entries(state.relationship_values || {})
+          .map(([k, v]) => k + "=" + v)
+          .join("、");
+        $("relationshipInfo").textContent = relations || "空";
+      } catch (error) {
+        $("storyNode").textContent = "-";
+        $("memoryInfo").textContent = "-";
+        $("relationshipInfo").textContent = "-";
+      }
+    }
+
+    async function ensureSession(force) {
+      const saved = localStorage.getItem("aethernpc.session");
+      if (saved && !force) {
+        try {
+          const resp = await fetch("/sessions/" + encodeURIComponent(saved));
+          if (resp.ok) {
+            sessionId = saved;
+            sessionInput.value = saved;
+            return saved;
+          }
+        } catch (error) {
+          // 网络异常时继续尝试使用旧 ID
+        }
+      }
+      try {
+        const response = await fetch("/sessions?player_id=demo-player", {
+          method: "POST",
+        });
+        if (!response.ok) throw new Error("创建会话失败");
+        const data = await response.json();
+        sessionId = data.session_id;
+        localStorage.setItem("aethernpc.session", sessionId);
+        sessionInput.value = sessionId;
+        return sessionId;
+      } catch (error) {
+        appendMessage("error", "创建会话失败：" + error.message);
+        return null;
+      }
+    }
+
+    function connect() {
+      const protocol = location.protocol === "https:" ? "wss" : "ws";
+      const url = protocol + "://" + location.host + "/ws/" + encodeURIComponent(sessionId);
+      socket = new WebSocket(url);
+      socket.onopen = () => {
+        setStatus("已连接", true);
+        connectBtn.textContent = "断开";
+        appendMessage("assistant", "WebSocket 已连接，可以开始对话。");
+      };
+      socket.onmessage = (event) => {
+        let data;
+        try {
+          data = JSON.parse(event.data);
+        } catch (error) {
+          appendMessage("error", "收到无法解析的消息：" + error.message);
+          return;
+        }
+        if (data.type === "error") {
+          appendMessage("error", data.error || "服务端错误");
+          if (data.code === 404 || (data.error || "").indexOf("会话不存在") !== -1) {
+            localStorage.removeItem("aethernpc.session");
+            appendMessage("assistant", "会话已失效，正在自动创建新会话并重连…");
+            disconnect();
+            ensureSession(true).then((sid) => {
+              if (sid) connect();
+            });
+          }
+          return;
+        }
+        const response = data.response || {};
+        const meta = "情感：" + (response.emotion || "-") +
+          " · 动作：" + (response.action || "-") +
+          " · 可信度 " + Math.round((response.confidence || 1) * 100) + "%" +
+          " · 节点：" + (data.current_node || "-");
+        appendMessage("assistant", response.dialogue || "", meta);
+        lastChoices = {};
+        for (const choice of response.suggested_choices || []) {
+          lastChoices[choice.choice_id] = choice.text;
+        }
+        appendChoices(response.suggested_choices || []);
+        updateState(data);
+        refreshSession();
+      };
+      socket.onerror = () => setStatus("连接异常", false);
+      socket.onclose = () => {
+        setStatus("未连接", false);
+        connectBtn.textContent = "连接";
+        socket = null;
+      };
+    }
+
+    function disconnect() {
+      if (socket) {
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify({ action: "close" }));
+        }
+        socket.close();
+        socket = null;
+      }
+      setStatus("未连接", false);
+      connectBtn.textContent = "连接";
+    }
+
+    connectBtn.onclick = () => {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        disconnect();
+      } else {
+        ensureSession().then((sid) => {
+          if (sid) connect();
+        });
+      }
+    };
+
+    function ensureSocket() {
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        appendMessage("error", "尚未连接，请先点击“连接”。");
+        return false;
+      }
+      return true;
+    }
+
+    function sendPayload(payload, label) {
+      if (!ensureSocket()) return;
+      sessionId = sessionInput.value.trim() || sessionId;
+      sessionInput.value = sessionId;
+      payload.npc_id = npcSelect.value;
+      socket.send(JSON.stringify(payload));
+      appendMessage("user", label, "发送给 " + npcSelect.selectedOptions[0].textContent);
+      messageInput.value = "";
+    }
+
+    function send() {
+      const text = messageInput.value.trim();
+      if (!text) return;
+      ensureSession().then((sid) => {
+        if (!sid) return;
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
+          connect();
+          appendMessage("error", "正在连接 WebSocket，请再发送一次。");
+          return;
+        }
+        sendPayload({ message: text }, text);
+      });
+    }
+
+    function sendChoice(choiceId) {
+      const label = "选择：" + (lastChoices[choiceId] || choiceId);
+      ensureSession().then((sid) => {
+        if (!sid) return;
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
+          connect();
+          appendMessage("error", "正在连接 WebSocket，请再发送一次。");
+          return;
+        }
+        sendPayload({ message: "我选择这个选项", choice_id: choiceId }, label);
+      });
+    }
+
+    sendBtn.onclick = send;
+    messageInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") send();
+    });
+
+    loadNpcs();
+    ensureSession().then((sid) => {
+      if (sid) connect();
+    });
+  </script>
+</body>
+</html>

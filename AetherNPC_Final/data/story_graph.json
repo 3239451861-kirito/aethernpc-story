@@ -1,0 +1,942 @@
+{
+  "start_node": "city_gate",
+  "nodes": {
+    "city_gate": {
+      "node_id": "city_gate",
+      "description": "银月城城门巍峨，月长石城墙泛着微光。城门守卫巴顿正打量着每一个进城的人。",
+      "choices": [
+        {
+          "choice_id": "ask_guard",
+          "text": "上前向守卫询问情况",
+          "preconditions": {},
+          "next_node": "guard_dialogue",
+          "effects": {
+            "relationship.gate_guard": 2
+          }
+        },
+        {
+          "choice_id": "bribe_guard",
+          "text": "塞给守卫一袋金币",
+          "preconditions": {
+            "memory.has_gold": true
+          },
+          "next_node": "guard_bribed",
+          "effects": {
+            "memory.bribed": true,
+            "relationship.gate_guard": -5
+          }
+        },
+        {
+          "choice_id": "sneak_past",
+          "text": "趁守卫不注意偷偷溜进城",
+          "preconditions": {},
+          "next_node": "caught_sneaking",
+          "effects": {
+            "memory.sneaking": true
+          }
+        },
+        {
+          "choice_id": "show_badge",
+          "text": "出示城主的徽章",
+          "preconditions": {
+            "relationship.gate_guard": 10
+          },
+          "next_node": "city_plaza",
+          "effects": {
+            "memory.badge_shown": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "guard_dialogue": {
+      "node_id": "guard_dialogue",
+      "description": "巴顿语气生硬，但回答得很有条理。他提到最近商队失踪的消息。",
+      "choices": [
+        {
+          "choice_id": "ask_caravan",
+          "text": "打听失踪的商队",
+          "preconditions": {},
+          "next_node": "caravan_info",
+          "effects": {
+            "memory.caravan_info": true,
+            "relationship.gate_guard": 3
+          }
+        },
+        {
+          "choice_id": "ask_danger",
+          "text": "询问黑森林的危险",
+          "preconditions": {},
+          "next_node": "forest_warning",
+          "effects": {
+            "memory.forest_danger": true,
+            "relationship.gate_guard": 3
+          }
+        },
+        {
+          "choice_id": "salute",
+          "text": "行一个标准的军礼后进城",
+          "preconditions": {},
+          "next_node": "city_plaza",
+          "effects": {
+            "relationship.gate_guard": 10
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "guard_bribed": {
+      "node_id": "guard_bribed",
+      "description": "你塞出一袋金币，巴顿沉默片刻，侧身让开了一条路。",
+      "choices": [
+        {
+          "choice_id": "enter",
+          "text": "快步进城",
+          "preconditions": {},
+          "next_node": "city_plaza",
+          "effects": {
+            "memory.bribed": true
+          }
+        },
+        {
+          "choice_id": "ask_secret",
+          "text": "追问守卫知道的秘密",
+          "preconditions": {},
+          "next_node": "guard_secret",
+          "effects": {
+            "memory.guard_secret": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "caught_sneaking": {
+      "node_id": "caught_sneaking",
+      "description": "你刚翻过墙头，就被巡逻的守卫一把按住。",
+      "choices": [
+        {
+          "choice_id": "apologize",
+          "text": "道歉并说明来意",
+          "preconditions": {},
+          "next_node": "city_plaza",
+          "effects": {
+            "memory.warned": true,
+            "relationship.gate_guard": -3
+          }
+        },
+        {
+          "choice_id": "fight",
+          "text": "挣脱后动手反抗",
+          "preconditions": {},
+          "next_node": "guard_fight",
+          "effects": {
+            "memory.fought_guard": true,
+            "relationship.gate_guard": -10
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "caravan_info": {
+      "node_id": "caravan_info",
+      "description": "巴顿告诉你，失踪的三支商队最后都消失在黑森林方向。",
+      "choices": [
+        {
+          "choice_id": "go_tavern",
+          "text": "先去醉龙酒馆打听消息",
+          "preconditions": {},
+          "next_node": "tavern",
+          "effects": {}
+        },
+        {
+          "choice_id": "go_forest",
+          "text": "直接前往黑森林",
+          "preconditions": {},
+          "next_node": "forest",
+          "effects": {
+            "memory.headed_forest": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "forest_warning": {
+      "node_id": "forest_warning",
+      "description": "巴顿警告你，黑森林常年被黑色雾气笼罩，连猎户都不愿深入。",
+      "choices": [
+        {
+          "choice_id": "go_tavern",
+          "text": "先去醉龙酒馆打听消息",
+          "preconditions": {},
+          "next_node": "tavern",
+          "effects": {}
+        },
+        {
+          "choice_id": "go_forest",
+          "text": "仍然前往黑森林",
+          "preconditions": {},
+          "next_node": "forest",
+          "effects": {
+            "memory.headed_forest": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "guard_secret": {
+      "node_id": "guard_secret",
+      "description": "巴顿压低声音：影子教团的人最近常在黑森林边缘出没。",
+      "choices": [
+        {
+          "choice_id": "go_townhall",
+          "text": "去市政厅汇报",
+          "preconditions": {},
+          "next_node": "townhall",
+          "effects": {
+            "memory.cult_hint": true
+          }
+        },
+        {
+          "choice_id": "go_tavern",
+          "text": "去酒馆打听影子教团",
+          "preconditions": {},
+          "next_node": "tavern",
+          "effects": {
+            "memory.cult_hint": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "guard_fight": {
+      "node_id": "guard_fight",
+      "description": "你与守卫扭打在一起，惊动了半个城门。",
+      "choices": [
+        {
+          "choice_id": "surrender",
+          "text": "束手就擒",
+          "preconditions": {},
+          "next_node": "city_plaza",
+          "effects": {
+            "memory.warned": true,
+            "relationship.gate_guard": -5
+          }
+        },
+        {
+          "choice_id": "win",
+          "text": "放倒守卫后冲进城内",
+          "preconditions": {},
+          "next_node": "city_plaza",
+          "effects": {
+            "memory.beat_guard": true,
+            "relationship.gate_guard": -8
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "city_plaza": {
+      "node_id": "city_plaza",
+      "description": "银月城中央广场人来人往，醉龙酒馆的招牌在风中摇晃。",
+      "choices": [
+        {
+          "choice_id": "go_tavern",
+          "text": "走进醉龙酒馆",
+          "preconditions": {},
+          "next_node": "tavern",
+          "effects": {}
+        },
+        {
+          "choice_id": "go_townhall",
+          "text": "前往市政厅",
+          "preconditions": {},
+          "next_node": "townhall",
+          "effects": {}
+        },
+        {
+          "choice_id": "go_forest",
+          "text": "出城前往黑森林",
+          "preconditions": {},
+          "next_node": "forest",
+          "effects": {
+            "memory.headed_forest": true
+          }
+        },
+        {
+          "choice_id": "visit_library",
+          "text": "前往月神图书馆查阅古籍",
+          "preconditions": {},
+          "next_node": "library",
+          "effects": {
+            "memory.curious_lore": true
+          }
+        },
+        {
+          "choice_id": "visit_temple",
+          "text": "前往月神殿祈福",
+          "preconditions": {},
+          "next_node": "temple",
+          "effects": {
+            "memory.curious_faith": true
+          }
+        },
+        {
+          "choice_id": "visit_mine",
+          "text": "前往城郊的银月矿坑",
+          "preconditions": {},
+          "next_node": "mine",
+          "effects": {
+            "memory.curious_ore": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "temple": {
+      "node_id": "temple",
+      "description": "月神殿穹顶洒下银白月光，祭司莉亚娜正在为信徒们低声祈福。",
+      "choices": [
+        {
+          "choice_id": "pray_blessing",
+          "text": "参加满月祈福仪式",
+          "preconditions": {},
+          "next_node": "temple_ritual",
+          "effects": {
+            "memory.blessed": true,
+            "relationship.priestess": 3
+          }
+        },
+        {
+          "choice_id": "ask_priestess",
+          "text": "向莉亚娜询问圣物的传说",
+          "preconditions": {},
+          "next_node": "temple_lore",
+          "effects": {
+            "memory.temple_lore": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "temple_ritual": {
+      "node_id": "temple_ritual",
+      "description": "月光穿过彩窗，在你掌心凝成一点银辉。莉亚娜为你轻声祝福。",
+      "choices": [
+        {
+          "choice_id": "join_ritual",
+          "text": "带着祝福踏上黑森林之路",
+          "preconditions": {},
+          "next_node": "forest",
+          "effects": {
+            "memory.headed_forest": true,
+            "memory.blessed": true
+          }
+        },
+        {
+          "choice_id": "bless_blade",
+          "text": "请莉亚娜为你的武器赐福",
+          "preconditions": {},
+          "next_node": "forest",
+          "effects": {
+            "memory.blessed_blade": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "temple_lore": {
+      "node_id": "temple_lore",
+      "description": "莉亚娜低声讲述第一纪元：圣物是月神赐给七贤者的礼物，也是最后的希望。",
+      "choices": [
+        {
+          "choice_id": "learn_oath",
+          "text": "追问圣物的下落",
+          "preconditions": {},
+          "next_node": "cult_trail",
+          "effects": {
+            "memory.seals_known": true
+          }
+        },
+        {
+          "choice_id": "leave_temple",
+          "text": "谢过祭司，去酒馆打听消息",
+          "preconditions": {},
+          "next_node": "tavern",
+          "effects": {}
+        }
+      ],
+      "is_end": false
+    },
+    "mine": {
+      "node_id": "mine",
+      "description": "银月矿坑入口灯火昏暗，矿工们正把闪着银光的月长石原矿装上板车。",
+      "choices": [
+        {
+          "choice_id": "inspect_ore",
+          "text": "查看矿场的发货账本",
+          "preconditions": {},
+          "next_node": "mine_ledger",
+          "effects": {
+            "memory.ore_inspected": true
+          }
+        },
+        {
+          "choice_id": "talk_miners",
+          "text": "和矿工们套近乎",
+          "preconditions": {},
+          "next_node": "mine_rumors",
+          "effects": {
+            "memory.miner_rumors": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "mine_ledger": {
+      "node_id": "mine_ledger",
+      "description": "发货单上，大批月长石被运往黑森林方向，收货人署名是一个月牙印记。",
+      "choices": [
+        {
+          "choice_id": "follow_shipment",
+          "text": "带着账本线索去市政厅",
+          "preconditions": {},
+          "next_node": "townhall",
+          "effects": {
+            "memory.shipment_followed": true
+          }
+        },
+        {
+          "choice_id": "trace_cult",
+          "text": "顺着月牙印记追查教团",
+          "preconditions": {},
+          "next_node": "cult_trail",
+          "effects": {
+            "memory.cult_lead": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "mine_rumors": {
+      "node_id": "mine_rumors",
+      "description": "矿工们压低声音：穿黑袍的人每月都来收购月长石，出手阔绰，从不还价。",
+      "choices": [
+        {
+          "choice_id": "buy_ore",
+          "text": "花金币买下一块上等原矿",
+          "preconditions": {
+            "memory.has_gold": true
+          },
+          "next_node": "mine_ledger",
+          "effects": {
+            "memory.ore_bought": true
+          }
+        },
+        {
+          "choice_id": "ask_direction",
+          "text": "询问黑森林的方向后出发",
+          "preconditions": {},
+          "next_node": "forest",
+          "effects": {
+            "memory.headed_forest": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "library": {
+      "node_id": "library",
+      "description": "月神图书馆穹顶高悬，管理员伊莲正在整理一摞羊皮卷轴。",
+      "choices": [
+        {
+          "choice_id": "read_history",
+          "text": "借阅第一纪元的历史卷轴",
+          "preconditions": {},
+          "next_node": "library_lore",
+          "effects": {
+            "memory.first_era": true
+          }
+        },
+        {
+          "choice_id": "find_map",
+          "text": "寻找上古废墟的地图",
+          "preconditions": {},
+          "next_node": "library_map",
+          "effects": {
+            "memory.artifact_map": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "library_lore": {
+      "node_id": "library_lore",
+      "description": "卷轴上记载着第一纪元的故事：七位贤者铸造圣物，封印虚空之主。",
+      "choices": [
+        {
+          "choice_id": "ask_seals",
+          "text": "追问七件圣物的下落",
+          "preconditions": {},
+          "next_node": "cult_trail",
+          "effects": {
+            "memory.seals_known": true
+          }
+        },
+        {
+          "choice_id": "leave",
+          "text": "谢过伊莲，去酒馆喝一杯",
+          "preconditions": {},
+          "next_node": "tavern",
+          "effects": {}
+        }
+      ],
+      "is_end": false
+    },
+    "library_map": {
+      "node_id": "library_map",
+      "description": "你在舆图架上找到一张泛黄的地图，标记着黑森林深处的上古废墟。",
+      "choices": [
+        {
+          "choice_id": "follow_map",
+          "text": "按地图前往废墟",
+          "preconditions": {},
+          "next_node": "ruins",
+          "effects": {
+            "memory.headed_forest": true
+          }
+        },
+        {
+          "choice_id": "report_mayor",
+          "text": "把地图带去市政厅",
+          "preconditions": {},
+          "next_node": "townhall",
+          "effects": {
+            "memory.map_reported": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "tavern": {
+      "node_id": "tavern",
+      "description": "醉龙酒馆里人声鼎沸，老板玛格丽特擦着杯子冲你笑。",
+      "choices": [
+        {
+          "choice_id": "buy_info",
+          "text": "花金币买一条消息",
+          "preconditions": {
+            "memory.has_gold": true
+          },
+          "next_node": "tavern_info",
+          "effects": {
+            "memory.tavern_info": true,
+            "relationship.tavern_owner": 3
+          }
+        },
+        {
+          "choice_id": "ask_rumors",
+          "text": "旁敲侧击打听谣言",
+          "preconditions": {
+            "relationship.tavern_owner": 10
+          },
+          "next_node": "tavern_rumors",
+          "effects": {
+            "memory.rumors": true,
+            "relationship.tavern_owner": 5
+          }
+        },
+        {
+          "choice_id": "drink",
+          "text": "先来一大杯麦酒",
+          "preconditions": {},
+          "next_node": "tavern_drunk",
+          "effects": {
+            "memory.drunk": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "tavern_info": {
+      "node_id": "tavern_info",
+      "description": "玛格丽特凑近你，压低声音说出她知道的线索。",
+      "choices": [
+        {
+          "choice_id": "go_townhall",
+          "text": "去市政厅确认",
+          "preconditions": {},
+          "next_node": "townhall",
+          "effects": {}
+        },
+        {
+          "choice_id": "go_forest",
+          "text": "按线索前往黑森林",
+          "preconditions": {},
+          "next_node": "forest",
+          "effects": {
+            "memory.headed_forest": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "tavern_rumors": {
+      "node_id": "tavern_rumors",
+      "description": "酒客们的闲谈里，反复出现「影子教团」和「黑森林」这两个词。",
+      "choices": [
+        {
+          "choice_id": "go_townhall",
+          "text": "去市政厅汇报",
+          "preconditions": {},
+          "next_node": "townhall",
+          "effects": {}
+        },
+        {
+          "choice_id": "go_forest",
+          "text": "前往黑森林查探",
+          "preconditions": {},
+          "next_node": "forest",
+          "effects": {
+            "memory.headed_forest": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "tavern_drunk": {
+      "node_id": "tavern_drunk",
+      "description": "麦酒后劲十足，你的视线开始模糊。",
+      "choices": [
+        {
+          "choice_id": "sleep_off",
+          "text": "趴在桌上睡一觉",
+          "preconditions": {},
+          "next_node": "tavern_rumors",
+          "effects": {
+            "memory.sober": true
+          }
+        },
+        {
+          "choice_id": "order_coffee",
+          "text": "点一杯醒酒咖啡",
+          "preconditions": {},
+          "next_node": "tavern_info",
+          "effects": {
+            "memory.sober": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "townhall": {
+      "node_id": "townhall",
+      "description": "市政厅大门敞开着，书记官们抱着一摞卷宗来回奔走。",
+      "choices": [
+        {
+          "choice_id": "meet_mayor",
+          "text": "求见城主",
+          "preconditions": {},
+          "next_node": "mayor_office",
+          "effects": {}
+        },
+        {
+          "choice_id": "check_records",
+          "text": "溜进档案室查记录",
+          "preconditions": {},
+          "next_node": "town_records",
+          "effects": {}
+        }
+      ],
+      "is_end": false
+    },
+    "mayor_office": {
+      "node_id": "mayor_office",
+      "description": "城主听完你的来意，眉头紧锁。他需要有人去黑森林查清商队失踪的真相。",
+      "choices": [
+        {
+          "choice_id": "accept_mission",
+          "text": "接下调查任务",
+          "preconditions": {},
+          "next_node": "forest_camp",
+          "effects": {
+            "memory.mission": true
+          }
+        },
+        {
+          "choice_id": "decline",
+          "text": "婉拒任务，先去查档案",
+          "preconditions": {},
+          "next_node": "town_records",
+          "effects": {
+            "memory.declined": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "town_records": {
+      "node_id": "town_records",
+      "description": "档案室的卷宗堆到天花板，灰尘在阳光里飞舞。",
+      "choices": [
+        {
+          "choice_id": "find_ledger",
+          "text": "翻找可疑的交易账本",
+          "preconditions": {},
+          "next_node": "ledger_clue",
+          "effects": {
+            "memory.ledger": true
+          }
+        },
+        {
+          "choice_id": "leave",
+          "text": "离开市政厅去黑森林",
+          "preconditions": {},
+          "next_node": "forest",
+          "effects": {
+            "memory.headed_forest": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "ledger_clue": {
+      "node_id": "ledger_clue",
+      "description": "你在账本里发现一笔可疑的月长石交易，买家署名只有一个月牙标记。",
+      "choices": [
+        {
+          "choice_id": "go_forest",
+          "text": "顺着线索前往黑森林",
+          "preconditions": {},
+          "next_node": "forest_camp",
+          "effects": {
+            "memory.headed_forest": true
+          }
+        },
+        {
+          "choice_id": "investigate_cult",
+          "text": "追查月牙标记的来历",
+          "preconditions": {},
+          "next_node": "cult_trail",
+          "effects": {
+            "memory.cult_lead": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "forest": {
+      "node_id": "forest",
+      "description": "黑森林边缘雾气翻涌，树干像沉默的哨兵。",
+      "choices": [
+        {
+          "choice_id": "enter_deep",
+          "text": "深入黑森林",
+          "preconditions": {},
+          "next_node": "forest_camp",
+          "effects": {
+            "memory.headed_forest": true
+          }
+        },
+        {
+          "choice_id": "follow_river",
+          "text": "沿河流寻找营地痕迹",
+          "preconditions": {},
+          "next_node": "cult_trail",
+          "effects": {
+            "memory.river_path": true
+          }
+        },
+        {
+          "choice_id": "visit_ranger",
+          "text": "拜访守林人的小屋",
+          "preconditions": {},
+          "next_node": "ranger_hut",
+          "effects": {
+            "memory.ranger_hut": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "ranger_hut": {
+      "node_id": "ranger_hut",
+      "description": "守林人卡恩正擦拭猎弓，屋前挂着几串风干的兽骨，炉火噼啪作响。",
+      "choices": [
+        {
+          "choice_id": "hire_guide",
+          "text": "花金币雇卡恩带路",
+          "preconditions": {
+            "memory.has_gold": true
+          },
+          "next_node": "forest_camp",
+          "effects": {
+            "memory.guide_hired": true,
+            "relationship.ranger": 5
+          }
+        },
+        {
+          "choice_id": "ask_tracks",
+          "text": "请他辨认地上的黑袍脚印",
+          "preconditions": {},
+          "next_node": "cult_trail",
+          "effects": {
+            "memory.ranger_tracks": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "forest_camp": {
+      "node_id": "forest_camp",
+      "description": "森林深处有一片被踩平的营地，地上散落着翡翠商队的货物残骸。",
+      "choices": [
+        {
+          "choice_id": "investigate",
+          "text": "搜查营地与脚印",
+          "preconditions": {},
+          "next_node": "ruins",
+          "effects": {
+            "memory.camp_found": true
+          }
+        },
+        {
+          "choice_id": "search_tracks",
+          "text": "追踪拖曳痕迹",
+          "preconditions": {},
+          "next_node": "cult_trail",
+          "effects": {
+            "memory.tracks": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "cult_trail": {
+      "node_id": "cult_trail",
+      "description": "你发现一串通往废墟的黑袍脚印，脚印旁落着一枚月牙徽章。",
+      "choices": [
+        {
+          "choice_id": "follow_trail",
+          "text": "沿脚印前往废墟",
+          "preconditions": {},
+          "next_node": "ruins",
+          "effects": {
+            "memory.trail": true
+          }
+        },
+        {
+          "choice_id": "study_map",
+          "text": "对照地图确认废墟入口",
+          "preconditions": {},
+          "next_node": "ruins",
+          "effects": {
+            "memory.map_studied": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "ruins": {
+      "node_id": "ruins",
+      "description": "上古废墟的入口处，浮雕上刻着七件圣物的图案。",
+      "choices": [
+        {
+          "choice_id": "search_altar",
+          "text": "潜入祭坛房间",
+          "preconditions": {},
+          "next_node": "altar_room",
+          "effects": {
+            "memory.altar": true
+          }
+        },
+        {
+          "choice_id": "ambush_cult",
+          "text": "伏击落单的黑袍人",
+          "preconditions": {},
+          "next_node": "cult_ambush",
+          "effects": {
+            "memory.ambushed": true
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "cult_ambush": {
+      "node_id": "cult_ambush",
+      "description": "黑袍人从阴影中扑出，将你团团围住。",
+      "choices": [
+        {
+          "choice_id": "break_free",
+          "text": "奋力突围冲进祭坛",
+          "preconditions": {},
+          "next_node": "altar_room",
+          "effects": {
+            "memory.escaped": true
+          }
+        },
+        {
+          "choice_id": "captured",
+          "text": "被俘后假意投靠",
+          "preconditions": {},
+          "next_node": "ending_betrayal",
+          "effects": {
+            "memory.choice": "betrayal"
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "altar_room": {
+      "node_id": "altar_room",
+      "description": "祭坛中央悬浮着虚空之钥，一群黑袍人正在进行献祭仪式。",
+      "choices": [
+        {
+          "choice_id": "seal",
+          "text": "夺走虚空之钥并加固封印",
+          "preconditions": {},
+          "next_node": "ending_hero",
+          "effects": {
+            "memory.choice": "hero"
+          }
+        },
+        {
+          "choice_id": "betray",
+          "text": "加入教团，背叛银月城",
+          "preconditions": {},
+          "next_node": "ending_betrayal",
+          "effects": {
+            "memory.choice": "betrayal"
+          }
+        },
+        {
+          "choice_id": "rescue",
+          "text": "先救出被囚的商队成员",
+          "preconditions": {},
+          "next_node": "ending_rescuer",
+          "effects": {
+            "memory.choice": "rescuer"
+          }
+        }
+      ],
+      "is_end": false
+    },
+    "ending_hero": {
+      "node_id": "ending_hero",
+      "description": "你取回虚空之钥并加固封印，银月城从此恢复宁静。你成为传说中的英雄。",
+      "choices": [],
+      "is_end": true
+    },
+    "ending_betrayal": {
+      "node_id": "ending_betrayal",
+      "description": "你选择与教团同流合污，银月城陷入长夜。历史会记住你的背叛。",
+      "choices": [],
+      "is_end": true
+    },
+    "ending_rescuer": {
+      "node_id": "ending_rescuer",
+      "description": "你救出被囚的商队成员并销毁虚空之钥，让月光重新照亮黑森林。",
+      "choices": [],
+      "is_end": true
+    }
+  }
+}
