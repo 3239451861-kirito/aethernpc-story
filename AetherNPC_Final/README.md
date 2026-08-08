@@ -4,6 +4,13 @@
 
 AetherNPC 是一个基于 **FastAPI + Pydantic v2 + SQLite + WebSocket** 的智能 NPC 对话系统。系统采用分层架构、单例模式与依赖注入，核心原则是：**大模型只给建议，服务端拥有最终决策权**。
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688.svg)
+![WebSocket](https://img.shields.io/badge/WebSocket-Realtime-4A90D9.svg)
+
+> **English:** AetherNPC is an AIGC-powered NPC dialogue system for RPG games, built with FastAPI, Pydantic v2, SQLite, and WebSocket. It combines a deterministic branching story engine (13 NPCs / 36 nodes / 76 choices), SQLite-backed RAG knowledge retrieval, an LLM client with automatic mock fallback, session memory, AI-agent story coverage tests, and a single-file WebSocket demo.
+
 完整的银月城世界观设定见 [WORLDVIEW.md](WORLDVIEW.md)：第一纪元、月长石、七件圣物、影子教团、黑森林上古废墟，以及英雄/背叛/救赎三个结局。
 
 项目当前包含 **13 位 NPC**、**36 个剧情节点**、**76 个剧情选项**，并配有城门、图书馆、月神殿、矿区、守林人五条可探索支线。
@@ -139,7 +146,7 @@ LOG_LEVEL=INFO
 ## 目录结构
 
 ```text
-AetherNPC/
+AetherNPC_Final/
 ├── app/
 │   ├── config.py           # 配置中心（python-dotenv + Pydantic）
 │   ├── schemas.py          # 数据模型精确定义
